@@ -1,22 +1,26 @@
 package com.suonk.oc_project5.model.data;
 
-import static com.suonk.oc_project5.model.data.Project.getProjectById;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.util.Comparator;
 
-@Entity
+@Entity(foreignKeys = {@ForeignKey(entity = Project.class,
+        parentColumns = "id",
+        childColumns = "project_id",
+        onDelete = ForeignKey.CASCADE)
+})
 public class Task {
-    
+
     /**
      * The unique identifier of the task
      */
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     private long id;
 
     /**
@@ -28,7 +32,6 @@ public class Task {
     /**
      * The name of the task
      */
-    // Suppress warning because setName is called in constructor
     @SuppressWarnings("NullableProblems")
     @NonNull
     @ColumnInfo(name = "name")
@@ -80,16 +83,6 @@ public class Task {
      */
     private void setProjectId(long projectId) {
         this.projectId = projectId;
-    }
-
-    /**
-     * Returns the project associated to the task.
-     *
-     * @return the project associated to the task
-     */
-    @Nullable
-    public Project getProject() {
-        return getProjectById(projectId);
     }
 
     /**

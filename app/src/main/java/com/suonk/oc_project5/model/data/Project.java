@@ -4,28 +4,34 @@ package com.suonk.oc_project5.model.data;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-/**
- * <p>Models for project in which tasks are included.</p>
- *
- * @author Gaëtan HERFRAY
- */
+import java.util.Objects;
+
+@Entity(tableName = "project")
 public class Project {
+
     /**
      * The unique identifier of the project
      */
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     private final long id;
 
     /**
      * The name of the project
      */
     @NonNull
+    @ColumnInfo(name = "name")
     private final String name;
 
     /**
      * The hex (ARGB) code of the color associated to the project
      */
     @ColorInt
+    @ColumnInfo(name = "color")
     private final int color;
 
     /**
@@ -53,22 +59,6 @@ public class Project {
                 new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
                 new Project(3L, "Projet Circus", 0xFFA3CED2),
         };
-    }
-
-    /**
-     * Returns the project with the given unique identifier, or null if no project with that
-     * identifier can be found.
-     *
-     * @param id the unique identifier of the project to return
-     * @return the project with the given unique identifier, or null if it has not been found
-     */
-    @Nullable
-    public static Project getProjectById(long id) {
-        for (Project project : getAllProjects()) {
-            if (project.id == id)
-                return project;
-        }
-        return null;
     }
 
     /**
@@ -101,8 +91,24 @@ public class Project {
     }
 
     @Override
-    @NonNull
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Project project = (Project) o;
+        return id == project.id && color == project.color && name.equals(project.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color);
+    }
+
+    @Override
     public String toString() {
-        return getName();
+        return "Project{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color=" + color +
+                '}';
     }
 }
