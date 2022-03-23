@@ -8,6 +8,7 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 @Entity(foreignKeys = {@ForeignKey(entity = Project.class,
         parentColumns = "id",
@@ -70,10 +71,19 @@ public class Task {
     /**
      * Sets the unique identifier of the task.
      *
-     * @param id the unique idenifier of the task to set
+     * @param id the unique identifier of the task to set
      */
     private void setId(long id) {
         this.id = id;
+    }
+
+    /**
+     * Returns the unique identifier of the project associated to the task.
+     *
+     * @return the unique identifier of the project associated to the task.
+     */
+    public long getProjectId() {
+        return projectId;
     }
 
     /**
@@ -102,6 +112,15 @@ public class Task {
      */
     private void setName(@NonNull String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns the timestamp when the task has been created.
+     *
+     * @return creationTimestamp the timestamp when the task has been created to set
+     */
+    public long getCreationTimestamp() {
+        return creationTimestamp;
     }
 
     /**
@@ -151,5 +170,28 @@ public class Task {
         public int compare(Task left, Task right) {
             return (int) (left.creationTimestamp - right.creationTimestamp);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && projectId == task.projectId && creationTimestamp == task.creationTimestamp && name.equals(task.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, projectId, name, creationTimestamp);
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", projectId=" + projectId +
+                ", name='" + name + '\'' +
+                ", creationTimestamp=" + creationTimestamp +
+                '}';
     }
 }
