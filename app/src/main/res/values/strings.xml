@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">OC_Project5</string>
+    <string name="a11y_add_task">Add new task</string>
+
+    <string name="toolbar_sort">Sort</string>
+    <string name="toolbar_sort_by_name">Sort by name</string>
+    <string name="toolbar_sort_by_date">Sort by date</string>
+    <string name="toolbar_sort_by_project">Sort by project</string>
+
+    <string name="no_task_title">Tu n\'as aucune tâche à traiter</string>
+
+    <string name="add_task_dialog_title">Add new task</string>
+    <string name="add_task_dialog_positive_button">Add</string>
+    <string name="add_task_dialog_negative_button">Cancel</string>
+    <string name="add_task_dialog_edit_text">Task name</string>
+
+    <string-array name="projects_array">
+        <item>Project Tartampion</item>
+        <item>Project Lucidia</item>
+        <item>Project Circus</item>
+    </string-array>
 </resources>

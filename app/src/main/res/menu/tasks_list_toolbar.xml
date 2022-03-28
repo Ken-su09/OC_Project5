@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/sort"
+        android:icon="@drawable/ic_filter"
+        android:title="@string/toolbar_sort"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/sort_by_name"
+                    android:checked="true"
+                    android:title="@string/toolbar_sort_by_name"
+                    app:showAsAction="collapseActionView" />
+                <item
+                    android:id="@+id/sort_by_date"
+                    android:title="@string/toolbar_sort_by_date"
+                    app:showAsAction="collapseActionView" />
+                <item
+                    android:id="@+id/sort_by_project"
+                    android:title="@string/toolbar_sort_by_project"
+                    app:showAsAction="collapseActionView" />
+            </group>
+        </menu>
+    </item>
+</menu>
