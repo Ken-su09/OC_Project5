@@ -1,10 +1,9 @@
 package com.suonk.oc_project5.ui.tasks.list;
 
-import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -17,13 +16,11 @@ import com.suonk.oc_project5.repositories.project.ProjectRepository;
 import com.suonk.oc_project5.repositories.task.TaskRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -113,17 +110,7 @@ public class TasksViewModel extends ViewModel {
 
     public void deleteTask(Long id) {
         executor.submit(() -> {
-            LiveData<List<Task>> tasksLiveData = taskRepository.getAllTasks();
-            viewStateLiveData.addSource(tasksLiveData, tasks -> {
-                for (Iterator<Task> iterator = tasks.iterator(); iterator.hasNext(); ) {
-                    Task task = iterator.next();
-                    if (task.getId() == id) {
-                        taskRepository.deleteTask(task);
-                        iterator.remove();
-                        break;
-                    }
-                }
-            });
+            taskRepository.deleteTask(id);
         });
     }
 }
