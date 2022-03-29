@@ -6,11 +6,7 @@ import java.util.Objects;
 
 public class CreateTaskViewState {
 
-    /**
-     * TaskName
-     */
-    @NonNull
-    private final String taskName;
+    private final long projectId;
 
     /**
      * projectName
@@ -22,16 +18,17 @@ public class CreateTaskViewState {
      * Constructor
      */
     public CreateTaskViewState(
-            @NonNull String taskName,
-            @NonNull String projectName) {
-        this.taskName = taskName;
+            long projectId,
+            @NonNull String projectName
+    ) {
+        this.projectId = projectId;
         this.projectName = projectName;
     }
 
-    @NonNull
-    public String getTaskName() {
-        return taskName;
+    public long getProjectId() {
+        return projectId;
     }
+
 
     @NonNull
     public String getProjectName() {
@@ -43,19 +40,16 @@ public class CreateTaskViewState {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CreateTaskViewState that = (CreateTaskViewState) o;
-        return taskName.equals(that.taskName) && projectName.equals(that.projectName);
+        return projectId == that.projectId && projectName.equals(that.projectName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(taskName, projectName);
+        return Objects.hash(projectId, projectName);
     }
 
     @Override
     public String toString() {
-        return "CreateTaskViewState{" +
-                "taskName='" + taskName + '\'' +
-                ", projectName='" + projectName + '\'' +
-                '}';
+        return projectId + " : " + projectName;
     }
 }

@@ -14,9 +14,5 @@
     <string name="add_task_dialog_negative_button">Cancel</string>
     <string name="add_task_dialog_edit_text">Task name</string>
 
-    <string-array name="projects_array">
-        <item>Project Tartampion</item>
-        <item>Project Lucidia</item>
-        <item>Project Circus</item>
-    </string-array>
+    <string name="create_task_dialog_empty_task_name_error">Task name should not be empty</string>
 </resources>

@@ -7,11 +7,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.DialogFragment;
@@ -19,14 +17,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.suonk.oc_project5.R;
 
-import java.util.Objects;
-
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class CreateTaskDialogFragment extends DialogFragment {
-
-    String spinnerName = "";
 
     @Nullable
     @Override
@@ -37,7 +31,7 @@ public class CreateTaskDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        Objects.requireNonNull(getDialog()).getWindow().setLayout(
+        getDialog().getWindow().setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT
         );
@@ -48,49 +42,38 @@ public class CreateTaskDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         CreateTaskViewModel viewModel = new ViewModelProvider(this).get(CreateTaskViewModel.class);
+        AppCompatSpinner spinner = view.findViewById(R.id.add_task_spinner);
 
-        setupSpinner(view.findViewById(R.id.add_task_spinner));
+        viewModel.getViewStatesLiveData().observe(getViewLifecycleOwner(), createTaskViewStates -> {
+            ArrayAdapter<CreateTaskViewState> adapter = new ArrayAdapter<CreateTaskViewState>(
+                    getContext(),
+                    android.R.layout.simple_spinner_item,
+                    createTaskViewStates
+            );
+
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        });
 
         AppCompatEditText taskName = view.findViewById(R.id.add_task_edit_text);
 
-        view.findViewById(R.id.add_task_button).setOnClickListener(view1 -> {
-            if (Objects.requireNonNull(taskName.getText()).toString().isEmpty()) {
-                Toast.makeText(getContext(), "Task name should not be empty", Toast.LENGTH_LONG).show();
-            } else {
-                viewModel.insertNewTask(new CreateTaskViewState(taskName.getText().toString(), spinnerName));
-                Objects.requireNonNull(getDialog()).dismiss();
-                getDialog().cancel();
-            }
+        view.findViewById(R.id.add_task_button).setOnClickListener(button -> {
+            viewModel.insertNewTask(((CreateTaskViewState) spinner.getSelectedItem()).getProjectId(), taskName.getText().toString());
+            dismiss();
         });
 
-        view.findViewById(R.id.cancel_dialog_button).setOnClickListener(view1 -> {
-            Objects.requireNonNull(getDialog()).dismiss();
-            getDialog().cancel();
+        view.findViewById(R.id.cancel_dialog_button).setOnClickListener(button -> {
+            dismiss();
         });
     }
-
-    //region ============================================ Spinner ===========================================
-
-    private void setupSpinner(AppCompatSpinner spinner) {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                getContext(),
-                R.array.projects_array,
-                android.R.layout.simple_spinner_item);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                spinnerName = spinner.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-
-    //endregion
 }
