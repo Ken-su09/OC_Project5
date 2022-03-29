@@ -18,6 +18,7 @@ import com.suonk.oc_project5.repositories.project.ProjectRepositoryImpl;
 import com.suonk.oc_project5.repositories.task.TaskRepository;
 import com.suonk.oc_project5.repositories.task.TaskRepositoryImpl;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.inject.Provider;
@@ -67,5 +68,11 @@ public class AppModule {
     @Provides
     public ProjectDao provideProjectDao(@NonNull AppDatabase database) {
         return database.projectDao();
+    }
+
+    @Singleton
+    @Provides
+    public Executor provideExecutor() {
+        return Executors.newFixedThreadPool(10);
     }
 }
