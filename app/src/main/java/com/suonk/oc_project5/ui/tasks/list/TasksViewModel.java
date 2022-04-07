@@ -1,7 +1,5 @@
 package com.suonk.oc_project5.ui.tasks.list;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -17,8 +15,8 @@ import com.suonk.oc_project5.repositories.task.TaskRepository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,15 +30,19 @@ public class TasksViewModel extends ViewModel {
     @NonNull
     private final TaskRepository taskRepository;
 
-    private final ExecutorService executor = Executors.newFixedThreadPool(10);
+    @NonNull
+    private final Executor executor;
 
     private final MediatorLiveData<List<TasksViewState>> viewStateLiveData = new MediatorLiveData<>();
-    private final MutableLiveData<Integer> isListEmptyLiveData = new MutableLiveData<>(0);
     private final MutableLiveData<Integer> sortIdLiveData = new MutableLiveData<>(R.id.sort_by_name);
+    private final MutableLiveData<Integer> isListEmptyLiveData = new MutableLiveData<>(0);
 
     @Inject
-    public TasksViewModel(@NonNull ProjectRepository projectRepository, @NonNull TaskRepository taskRepository) {
+    public TasksViewModel(@NonNull ProjectRepository projectRepository,
+                          @NonNull TaskRepository taskRepository,
+                          @NonNull Executor executor) {
         this.taskRepository = taskRepository;
+        this.executor = executor;
 
         LiveData<List<Project>> projectsLiveData = projectRepository.getAllProjects();
         LiveData<List<Task>> tasksLiveData = taskRepository.getAllTasks();
@@ -56,11 +58,12 @@ public class TasksViewModel extends ViewModel {
     }
 
     private void combine(@Nullable List<Project> projects, @Nullable List<Task> tasks, @Nullable Integer sortId) {
+        List<TasksViewState> tasksViewStates = new ArrayList<>();
+
         if (projects == null || tasks == null) {
+            viewStateLiveData.setValue(tasksViewStates);
             return;
         }
-
-        List<TasksViewState> tasksViewStates = new ArrayList<>();
 
         for (Task task : tasks) {
             for (Project project : projects) {
@@ -88,8 +91,10 @@ public class TasksViewModel extends ViewModel {
                 tasksViewStates.sort(Comparator.comparing(TasksViewState::getTaskName));
             } else if (sortId == R.id.sort_by_date) {
                 tasksViewStates.sort(Comparator.comparing(TasksViewState::getId).reversed());
-            } else {
+            } else if (sortId == R.id.sort_by_project) {
                 tasksViewStates.sort(Comparator.comparing(TasksViewState::getColor));
+            } else {
+                tasksViewStates.sort(Comparator.comparing(TasksViewState::getTaskName));
             }
         }
 
@@ -100,17 +105,17 @@ public class TasksViewModel extends ViewModel {
         sortIdLiveData.setValue(sortId);
     }
 
+    @NonNull
     public LiveData<List<TasksViewState>> getAllTasks() {
         return viewStateLiveData;
     }
 
+    @NonNull
     public LiveData<Integer> getIfListIsEmpty() {
         return isListEmptyLiveData;
     }
 
     public void deleteTask(Long id) {
-        executor.submit(() -> {
-            taskRepository.deleteTask(id);
-        });
+        executor.execute(() -> taskRepository.deleteTask(id));
     }
 }

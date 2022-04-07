@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,7 +46,7 @@ public class CreateTaskDialogFragment extends DialogFragment {
         AppCompatSpinner spinner = view.findViewById(R.id.add_task_spinner);
 
         viewModel.getViewStatesLiveData().observe(getViewLifecycleOwner(), createTaskViewStates -> {
-            ArrayAdapter<CreateTaskViewState> adapter = new ArrayAdapter<CreateTaskViewState>(
+            ArrayAdapter<CreateTaskViewState> adapter = new ArrayAdapter<>(
                     getContext(),
                     android.R.layout.simple_spinner_item,
                     createTaskViewStates
@@ -69,11 +70,20 @@ public class CreateTaskDialogFragment extends DialogFragment {
 
         view.findViewById(R.id.add_task_button).setOnClickListener(button -> {
             viewModel.insertNewTask(((CreateTaskViewState) spinner.getSelectedItem()).getProjectId(), taskName.getText().toString());
-            dismiss();
         });
 
         view.findViewById(R.id.cancel_dialog_button).setOnClickListener(button -> {
             dismiss();
         });
+
+        viewModel.getToastSingleLiveEvent().observe(this, errorToastMessage -> {
+                    Toast.makeText(getContext(), errorToastMessage, Toast.LENGTH_SHORT).show();
+                }
+        );
+
+        viewModel.getInsertTaskValidLiveEvent().observe(this, test -> {
+                    dismiss();
+                }
+        );
     }
 }

@@ -1,7 +1,6 @@
 package com.suonk.oc_project5.ui.tasks.create;
 
 import android.app.Application;
-import android.icu.text.UnicodeSetIterator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,11 +16,8 @@ import com.suonk.oc_project5.repositories.task.TaskRepository;
 import com.suonk.oc_project5.utils.SingleLiveEvent;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -45,6 +41,8 @@ public class CreateTaskViewModel extends ViewModel {
     @NonNull
     private final SingleLiveEvent<String> toastSingleLiveEvent = new SingleLiveEvent<>();
 
+    @NonNull
+    private final SingleLiveEvent<Boolean> insertTaskValidLiveEvent = new SingleLiveEvent<>();
 
     @Inject
     public CreateTaskViewModel(
@@ -76,11 +74,23 @@ public class CreateTaskViewModel extends ViewModel {
 
     public void insertNewTask(long projectId, @Nullable String taskName) {
         if (taskName == null || taskName.isEmpty()) {
-            toastSingleLiveEvent.setValue(context.getString(R.string.create_task_dialog_empty_task_name_error), context);
+            toastSingleLiveEvent.setValue(context.getString(R.string.create_task_dialog_empty_task_name_error));
+            insertTaskValidLiveEvent.setValue(false);
         } else {
             executor.execute(() -> {
                 taskRepository.insertTask(new Task(0, projectId, taskName));
             });
+            insertTaskValidLiveEvent.setValue(true);
         }
+    }
+
+    @NonNull
+    public SingleLiveEvent<String> getToastSingleLiveEvent() {
+        return toastSingleLiveEvent;
+    }
+
+    @NonNull
+    public SingleLiveEvent<Boolean> getInsertTaskValidLiveEvent() {
+        return insertTaskValidLiveEvent;
     }
 }

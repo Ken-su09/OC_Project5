@@ -42,6 +42,7 @@ public class AppModule {
                 context,
                 AppDatabase.class,
                 "app_database")
+                .allowMainThreadQueries()
                 .addCallback(new RoomDatabase.Callback() {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {

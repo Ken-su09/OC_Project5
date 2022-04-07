@@ -1,7 +1,5 @@
 package com.suonk.oc_project5.utils;
 
-import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -45,9 +43,8 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
     }
 
     @MainThread
-    public void setValue(@Nullable T t, Context context) {
+    public void setValue(@Nullable T t) {
         mPending.set(true);
-        Toast.makeText(context, "" + t, Toast.LENGTH_SHORT).show();
         super.setValue(t);
     }
 
