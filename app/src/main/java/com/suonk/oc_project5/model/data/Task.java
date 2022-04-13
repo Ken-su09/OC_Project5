@@ -13,8 +13,7 @@ import java.util.Objects;
 @Entity(tableName = "task",
         foreignKeys = {@ForeignKey(entity = Project.class,
         parentColumns = "id",
-        childColumns = "project_id",
-        onDelete = ForeignKey.CASCADE)
+        childColumns = "project_id")
 })
 public class Task {
 

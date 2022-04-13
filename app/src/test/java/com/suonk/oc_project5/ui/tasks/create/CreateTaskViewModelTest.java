@@ -1,6 +1,7 @@
 package com.suonk.oc_project5.ui.tasks.create;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 import android.app.Application;
 
@@ -51,34 +52,6 @@ public class CreateTaskViewModelTest {
     }
 
     @Test
-    public void insert_new_task() {
-        // When
-        viewModel.insertNewTask(2, "taskName");
-
-        // Then
-        Mockito.verify(taskRepository).insertTask(new Task(0, 2, "taskName"));
-        Mockito.verifyNoMoreInteractions(taskRepository);
-    }
-
-    @Test
-    public void try_to_insert_new_task_with_task_name_empty() {
-        // When
-        viewModel.insertNewTask(1, "");
-
-        // Then
-        Mockito.doNothing().when(taskRepository).insertTask(new Task(0, 1, ""));
-    }
-
-    @Test
-    public void try_to_insert_new_task_with_task_name_null() {
-        // When
-        viewModel.insertNewTask(1, null);
-
-        // Then
-        Mockito.doNothing().when(taskRepository).insertTask(new Task(0, 1, null));
-    }
-
-    @Test
     public void get_live_data_list_of_projects() {
         // When
         List<CreateTaskViewState> createTaskViewStates = TestUtils.getValueForTesting(viewModel.getViewStatesLiveData());
@@ -94,27 +67,43 @@ public class CreateTaskViewModelTest {
     public void when_try_to_insert_task_with_empty_task_name_should_display_dialog_create_task_dialog_empty_task_name_error() {
         // When
         viewModel.insertNewTask(1, "");
-
         String toastMessage = TestUtils.getValueForTesting(viewModel.getToastSingleLiveEvent());
+        Boolean dismissDialog = TestUtils.getValueForTesting(viewModel.getInsertTaskValidLiveEvent());
+
+        // Then
         assertEquals(application.getString(R.string.create_task_dialog_empty_task_name_error), toastMessage);
+        assertEquals(false, dismissDialog);
+
+        Mockito.verify(taskRepository, Mockito.never()).insertTask(any());
+        Mockito.verifyNoMoreInteractions(taskRepository);
+    }
+
+    @Test
+    public void when_try_to_insert_task_with_null_task_name_should_display_dialog_create_task_dialog_empty_task_name_error() {
+        // When
+        viewModel.insertNewTask(1, null);
+        String toastMessage = TestUtils.getValueForTesting(viewModel.getToastSingleLiveEvent());
+        Boolean dismissDialog = TestUtils.getValueForTesting(viewModel.getInsertTaskValidLiveEvent());
+
+        // Then
+        assertEquals(application.getString(R.string.create_task_dialog_empty_task_name_error), toastMessage);
+        assertEquals(false, dismissDialog);
+
+        Mockito.verify(taskRepository, Mockito.never()).insertTask(any());
+        Mockito.verifyNoMoreInteractions(taskRepository);
     }
 
     @Test
     public void after_successfully_insert_task_should_dismiss_dialog() {
         // When
         viewModel.insertNewTask(1, "test");
-
         Boolean dismissDialog = TestUtils.getValueForTesting(viewModel.getInsertTaskValidLiveEvent());
+
+        // Then
         assertEquals(true, dismissDialog);
-    }
 
-    @Test
-    public void dismiss_dialog_should_be_false_if_task_name_empty() {
-        // When
-        viewModel.insertNewTask(1, "");
-
-        Boolean dismissDialog = TestUtils.getValueForTesting(viewModel.getInsertTaskValidLiveEvent());
-        assertEquals(false, dismissDialog);
+        Mockito.verify(taskRepository).insertTask(new Task(0, 1, "test"));
+        Mockito.verifyNoMoreInteractions(taskRepository);
     }
 
     @NonNull

@@ -36,7 +36,7 @@ public class TasksViewModelTest {
 
     private final TaskRepository taskRepository = Mockito.mock(TaskRepository.class);
     private final ProjectRepository projectRepository = Mockito.mock(ProjectRepository.class);
-    private final Executor executor = Mockito.spy(new TestExecutor());
+    private final Executor executor = new TestExecutor();
 
     private final MutableLiveData<List<Task>> tasksMutableLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Project>> projectsMutableLiveData = new MutableLiveData<>();
@@ -64,7 +64,8 @@ public class TasksViewModelTest {
 
         // Then
         verify(taskRepository).getAllTasks();
-        verifyNoMoreInteractions(taskRepository);
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
 
     @Test
@@ -77,24 +78,19 @@ public class TasksViewModelTest {
 
         // Then
         verify(taskRepository).getAllTasks();
-        verifyNoMoreInteractions(taskRepository);
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
 
     @Test
     public void test_tasks_null_and_projects_not_null() {
         tasksMutableLiveData.setValue(null);
 
-//        liveData.observeForever(t -> {
-//        });
-
         // When
         List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
 
-        assertEquals(0, listOfTasks.size());
-
         // Then
-        verify(taskRepository).getAllTasks();
-        verifyNoMoreInteractions(taskRepository);
+        assertEquals(0, listOfTasks.size());
     }
 
     @Test
@@ -104,9 +100,9 @@ public class TasksViewModelTest {
         // When
         List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
 
+        // Then
         assertEquals(0, listOfTasks.size());
 
-        // Then
         verify(taskRepository).getAllTasks();
         verifyNoMoreInteractions(taskRepository);
     }
@@ -119,9 +115,9 @@ public class TasksViewModelTest {
         // When
         List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
 
+        // Then
         assertEquals(0, listOfTasks.size());
 
-        // Then
         verify(taskRepository).getAllTasks();
         verifyNoMoreInteractions(taskRepository);
     }
@@ -133,9 +129,9 @@ public class TasksViewModelTest {
         // When
         List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
 
+        // Then
         assertEquals(getDefaultTasksViewStateSortByName(), listOfTasks);
 
-        // Then
         verify(taskRepository).getAllTasks();
         verifyNoMoreInteractions(taskRepository);
     }
@@ -147,9 +143,9 @@ public class TasksViewModelTest {
         // When
         List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
 
+        // Then
         assertEquals(getDefaultTasksViewStateSortByDate(), listOfTasks);
 
-        // Then
         verify(taskRepository).getAllTasks();
         verifyNoMoreInteractions(taskRepository);
     }
@@ -161,9 +157,9 @@ public class TasksViewModelTest {
         // When
         List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
 
+        // Then
         assertEquals(getDefaultTasksViewStateSortByProject(), listOfTasks);
 
-        // Then
         verify(taskRepository).getAllTasks();
         verifyNoMoreInteractions(taskRepository);
     }
@@ -175,9 +171,9 @@ public class TasksViewModelTest {
         // When
         List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
 
+        // Then
         assertEquals(getDefaultTasksViewStateSortByName(), listOfTasks);
 
-        // Then
         verify(taskRepository).getAllTasks();
         verifyNoMoreInteractions(taskRepository);
     }
