@@ -113,17 +113,4 @@ public class TaskDaoTest {
 
         assertEquals(1, tasks.size());
     }
-
-    @Test
-    public void insert_then_update_task() throws InterruptedException {
-        Task taskTest1 = new Task(1L, 1, "test1");
-        taskDao.insertTask(taskTest1);
-        Task task = LiveDataTestUtil.getValue(taskDao.getTaskById(1L));
-
-        assertEquals(taskTest1, task);
-
-        taskDao.updateTask(new Task(1L, 1, "test1"));
-
-        assertNotSame(taskTest1, task);
-    }
 }

@@ -1,6 +1,8 @@
 package com.suonk.oc_project5.ui.tasks.list;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -34,185 +36,289 @@ public class TasksViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
+    private TasksViewModel tasksViewModel;
+
+    //region ============================================= MOCK =============================================
+
     private final TaskRepository taskRepository = Mockito.mock(TaskRepository.class);
     private final ProjectRepository projectRepository = Mockito.mock(ProjectRepository.class);
     private final Executor executor = new TestExecutor();
 
+    //endregion
+
+    //region ======================================== DEFAULT VALUES ========================================
+
+    private static final int PROJECT_ID_1 = 1;
+    private static final String PROJECT_NAME_1 = "Project Tartampion";
+    private static final int PROJECT_COLOR_1 = R.drawable.ic_circle_beige;
+
+    private static final int PROJECT_ID_2 = 2;
+    private static final String PROJECT_NAME_2 = "Project Lucidia";
+    private static final int PROJECT_COLOR_2 = R.drawable.ic_circle_green;
+
+    private static final int PROJECT_ID_3 = 3;
+    private static final String PROJECT_NAME_3 = "Project Circus";
+    private static final int PROJECT_COLOR_3 = R.drawable.ic_circle_blue;
+
+    private static final int TASK_ID_1 = 1;
+    private static final int TASK_ID_2 = 2;
+    private static final int TASK_ID_3 = 3;
+    private static final int TASK_ID_4 = 4;
+    private static final int TASK_ID_5 = 5;
+    private static final int TASK_ID_6 = 6;
+    private static final int TASK_ID_7 = 7;
+    private static final int TASK_ID_8 = 8;
+    private static final int TASK_ID_9 = 9;
+
+    private static final String TASK_NAME_1 = "TASK_NAME_1";
+    private static final String TASK_NAME_2 = "TASK_NAME_2";
+    private static final String TASK_NAME_3 = "TASK_NAME_3";
+    private static final String TASK_NAME_4 = "TASK_NAME_4";
+    private static final String TASK_NAME_5 = "TASK_NAME_5";
+    private static final String TASK_NAME_6 = "TASK_NAME_6";
+    private static final String TASK_NAME_7 = "TASK_NAME_7";
+    private static final String TASK_NAME_8 = "TASK_NAME_8";
+    private static final String TASK_NAME_9 = "TASK_NAME_9";
+
+    //endregion
+
     private final MutableLiveData<List<Task>> tasksMutableLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Project>> projectsMutableLiveData = new MutableLiveData<>();
 
-    private TasksViewModel viewModel;
-
     @Before
     public void setup() {
-        Mockito.doReturn(tasksMutableLiveData).when(taskRepository).getAllTasks();
-        Mockito.doReturn(projectsMutableLiveData).when(projectRepository).getAllProjects();
+        doReturn(tasksMutableLiveData).when(taskRepository).getAllTasks();
+        doReturn(projectsMutableLiveData).when(projectRepository).getAllProjects();
 
         tasksMutableLiveData.setValue(getDefaultTasks());
         projectsMutableLiveData.setValue(getDefaultProjects());
 
-        viewModel = new TasksViewModel(projectRepository, taskRepository, executor);
+        tasksViewModel = new TasksViewModel(projectRepository, taskRepository, executor);
     }
 
+    //region ======================================== GET ALL TASKS =========================================
+
     @Test
-    public void initialCase() {
-        // When
+    public void get_all_tasks_with_empty_tasks() {
+        // GIVEN
         tasksMutableLiveData.setValue(new ArrayList<>());
-        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
 
+        // WHEN
+        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
+
+        // THEN
         assertEquals(0, listOfTasks.size());
-
-        // Then
         verify(taskRepository).getAllTasks();
         verify(projectRepository).getAllProjects();
         verifyNoMoreInteractions(taskRepository, projectRepository);
     }
 
     @Test
-    public void nominal_case() {
-        // When
-        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
+    public void get_all_tasks() {
+        // WHEN
+        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
 
+        // THEN
         assertEquals(9, listOfTasks.size());
-        assertEquals(getDefaultTasksViewState(), listOfTasks);
+        assertEquals(getDefaultTasksViewStateSortByDate(), listOfTasks);
 
-        // Then
         verify(taskRepository).getAllTasks();
         verify(projectRepository).getAllProjects();
         verifyNoMoreInteractions(taskRepository, projectRepository);
     }
 
     @Test
-    public void test_tasks_null_and_projects_not_null() {
+    public void get_all_tasks_if_tasks_list_is_null() {
+        // GIVEN
         tasksMutableLiveData.setValue(null);
 
         // When
-        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
-
-        // Then
-        assertEquals(0, listOfTasks.size());
-    }
-
-    @Test
-    public void test_projects_null_and_tasks_not_null() {
-        projectsMutableLiveData.setValue(null);
-
-        // When
-        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
+        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
 
         // Then
         assertEquals(0, listOfTasks.size());
 
         verify(taskRepository).getAllTasks();
-        verifyNoMoreInteractions(taskRepository);
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
 
     @Test
-    public void test_projects_and_tasks_null() {
+    public void get_all_tasks_if_projects_list_is_null() {
+        // GIVEN
         projectsMutableLiveData.setValue(null);
-        tasksMutableLiveData.setValue(null);
 
         // When
-        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
+        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
 
         // Then
         assertEquals(0, listOfTasks.size());
 
         verify(taskRepository).getAllTasks();
-        verifyNoMoreInteractions(taskRepository);
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
+
+    @Test
+    public void get_all_tasks_if_projects_and_tasks_lists_are_null() {
+        // GIVEN
+        tasksMutableLiveData.setValue(null);
+        projectsMutableLiveData.setValue(null);
+
+        // When
+        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
+
+        // Then
+        assertEquals(0, listOfTasks.size());
+
+        verify(taskRepository).getAllTasks();
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
+    }
+
+    //endregion
+
+    //region ============================================= SORT =============================================
 
     @Test
     public void get_all_tasks_sort_by_name() {
-        viewModel.setFilterIdLiveData(R.id.sort_by_name);
+        // GIVEN
+        tasksViewModel.setFilterIdLiveData(R.id.sort_by_name);
 
-        // When
-        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
+        // WHEN
+        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
 
-        // Then
+        // THEN
         assertEquals(getDefaultTasksViewStateSortByName(), listOfTasks);
 
         verify(taskRepository).getAllTasks();
-        verifyNoMoreInteractions(taskRepository);
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
 
     @Test
     public void get_all_tasks_sort_by_date() {
-        viewModel.setFilterIdLiveData(R.id.sort_by_date);
+        // GIVEN
+        tasksViewModel.setFilterIdLiveData(R.id.sort_by_date);
 
-        // When
-        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
+        // WHEN
+        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
 
-        // Then
+        // THEN
         assertEquals(getDefaultTasksViewStateSortByDate(), listOfTasks);
 
         verify(taskRepository).getAllTasks();
-        verifyNoMoreInteractions(taskRepository);
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
 
     @Test
     public void get_all_tasks_sort_by_project() {
-        viewModel.setFilterIdLiveData(R.id.sort_by_project);
+        // GIVEN
+        tasksViewModel.setFilterIdLiveData(R.id.sort_by_project);
 
-        // When
-        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
+        // WHEN
+        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
 
-        // Then
+        // THEN
+        assertNotNull(listOfTasks);
         assertEquals(getDefaultTasksViewStateSortByProject(), listOfTasks);
 
         verify(taskRepository).getAllTasks();
-        verifyNoMoreInteractions(taskRepository);
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
 
     @Test
-    public void get_all_tasks_sort_by_random_sort_id_should_sort_by_name_by_default() {
-        viewModel.setFilterIdLiveData(313546809);
+    public void get_all_tasks_with_sort_null() {
+        // GIVEN
+        tasksViewModel.setFilterIdLiveData(null);
 
-        // When
-        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(viewModel.getAllTasks());
+        // WHEN
+        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
 
-        // Then
-        assertEquals(getDefaultTasksViewStateSortByName(), listOfTasks);
+        // THEN
+        assertNotNull(listOfTasks);
+        assertEquals(getDefaultTasksViewStateSortByDate(), listOfTasks);
 
         verify(taskRepository).getAllTasks();
-        verifyNoMoreInteractions(taskRepository);
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
+
+    @Test
+    public void get_all_tasks_with_sort_random_value() {
+        // GIVEN
+        tasksViewModel.setFilterIdLiveData(313546809);
+
+        // WHEN
+        List<TasksViewState> listOfTasks = TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
+
+        // THEN
+        assertNotNull(listOfTasks);
+        assertEquals(getDefaultTasksViewStateSortByDate(), listOfTasks);
+
+        verify(taskRepository).getAllTasks();
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
+    }
+
+    //endregion
 
     @Test
     public void if_list_is_empty_should_return_0() {
-        // When
+        // GIVEN
         tasksMutableLiveData.setValue(new ArrayList<>());
-        TestUtils.getValueForTesting(viewModel.getAllTasks());
-        int listEmpty = TestUtils.getValueForTesting(viewModel.getIfListIsEmpty());
 
+        // WHEN
+        TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
+        int listEmpty = TestUtils.getValueForTesting(tasksViewModel.getIfListIsEmpty());
+
+        // THEN
         assertEquals(0, listEmpty);
+
+        verify(taskRepository).getAllTasks();
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
 
     @Test
     public void if_list_is_not_empty_should_return_4() {
-        // When
-        TestUtils.getValueForTesting(viewModel.getAllTasks());
-        int listEmpty = TestUtils.getValueForTesting(viewModel.getIfListIsEmpty());
+        // GIVEN
+        TestUtils.getValueForTesting(tasksViewModel.getAllTasks());
 
+        // WHEN
+        int listEmpty = TestUtils.getValueForTesting(tasksViewModel.getIfListIsEmpty());
+
+        // THEN
         assertEquals(4, listEmpty);
+
+        verify(taskRepository).getAllTasks();
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
 
     @Test
     public void delete_task_from_list() {
-        // When
-        viewModel.deleteTask(1L);
+        // WHEN
+        tasksViewModel.deleteTask(1L);
 
-        // Then
+        // THEN
         verify(taskRepository).deleteTask(1L);
+        verify(taskRepository).getAllTasks();
+        verify(projectRepository).getAllProjects();
+        verifyNoMoreInteractions(taskRepository, projectRepository);
     }
+
+    //region ======================================== DEFAULT LISTS =========================================
 
     @NonNull
     private List<Project> getDefaultProjects() {
         List<Project> projects = new ArrayList<>();
 
-        projects.add(new Project(1, "Project Tartampion", R.drawable.ic_circle_beige));
-        projects.add(new Project(2, "Project Lucidia", R.drawable.ic_circle_green));
-        projects.add(new Project(3, "Project Circus", R.drawable.ic_circle_blue));
+        projects.add(new Project(PROJECT_ID_1, PROJECT_NAME_1, PROJECT_COLOR_1));
+        projects.add(new Project(PROJECT_ID_2, PROJECT_NAME_2, PROJECT_COLOR_2));
+        projects.add(new Project(PROJECT_ID_3, PROJECT_NAME_3, PROJECT_COLOR_3));
 
         return projects;
     }
@@ -221,15 +327,15 @@ public class TasksViewModelTest {
     private List<Task> getDefaultTasks() {
         List<Task> tasks = new ArrayList<>();
 
-        tasks.add(new Task(1, 1, "task1"));
-        tasks.add(new Task(2, 2, "task2"));
-        tasks.add(new Task(3, 3, "task3"));
-        tasks.add(new Task(4, 1, "task4"));
-        tasks.add(new Task(5, 2, "task5"));
-        tasks.add(new Task(6, 3, "task6"));
-        tasks.add(new Task(7, 1, "task7"));
-        tasks.add(new Task(8, 2, "task8"));
-        tasks.add(new Task(9, 3, "task9"));
+        tasks.add(new Task(TASK_ID_1, PROJECT_ID_1, TASK_NAME_1));
+        tasks.add(new Task(TASK_ID_2, PROJECT_ID_2, TASK_NAME_2));
+        tasks.add(new Task(TASK_ID_3, PROJECT_ID_3, TASK_NAME_3));
+        tasks.add(new Task(TASK_ID_4, PROJECT_ID_1, TASK_NAME_4));
+        tasks.add(new Task(TASK_ID_5, PROJECT_ID_2, TASK_NAME_5));
+        tasks.add(new Task(TASK_ID_6, PROJECT_ID_3, TASK_NAME_6));
+        tasks.add(new Task(TASK_ID_7, PROJECT_ID_1, TASK_NAME_7));
+        tasks.add(new Task(TASK_ID_8, PROJECT_ID_2, TASK_NAME_8));
+        tasks.add(new Task(TASK_ID_9, PROJECT_ID_3, TASK_NAME_9));
 
         return tasks;
     }
@@ -238,15 +344,15 @@ public class TasksViewModelTest {
     private List<TasksViewState> getDefaultTasksViewState() {
         List<TasksViewState> tasksViewState = new ArrayList<>();
 
-        tasksViewState.add(new TasksViewState(1, "task1", R.drawable.ic_circle_beige));
-        tasksViewState.add(new TasksViewState(2, "task2", R.drawable.ic_circle_green));
-        tasksViewState.add(new TasksViewState(3, "task3", R.drawable.ic_circle_blue));
-        tasksViewState.add(new TasksViewState(4, "task4", R.drawable.ic_circle_beige));
-        tasksViewState.add(new TasksViewState(5, "task5", R.drawable.ic_circle_green));
-        tasksViewState.add(new TasksViewState(6, "task6", R.drawable.ic_circle_blue));
-        tasksViewState.add(new TasksViewState(7, "task7", R.drawable.ic_circle_beige));
-        tasksViewState.add(new TasksViewState(8, "task8", R.drawable.ic_circle_green));
-        tasksViewState.add(new TasksViewState(9, "task9", R.drawable.ic_circle_blue));
+        tasksViewState.add(new TasksViewState(TASK_ID_1, TASK_NAME_1, PROJECT_COLOR_1));
+        tasksViewState.add(new TasksViewState(TASK_ID_2, TASK_NAME_2, PROJECT_COLOR_2));
+        tasksViewState.add(new TasksViewState(TASK_ID_3, TASK_NAME_3, PROJECT_COLOR_3));
+        tasksViewState.add(new TasksViewState(TASK_ID_4, TASK_NAME_4, PROJECT_COLOR_1));
+        tasksViewState.add(new TasksViewState(TASK_ID_5, TASK_NAME_5, PROJECT_COLOR_2));
+        tasksViewState.add(new TasksViewState(TASK_ID_6, TASK_NAME_6, PROJECT_COLOR_3));
+        tasksViewState.add(new TasksViewState(TASK_ID_7, TASK_NAME_7, PROJECT_COLOR_1));
+        tasksViewState.add(new TasksViewState(TASK_ID_8, TASK_NAME_8, PROJECT_COLOR_2));
+        tasksViewState.add(new TasksViewState(TASK_ID_9, TASK_NAME_9, PROJECT_COLOR_3));
 
         return tasksViewState;
     }
@@ -277,4 +383,6 @@ public class TasksViewModelTest {
 
         return tasksViewState;
     }
+
+    //endregion
 }

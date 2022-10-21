@@ -13,8 +13,4 @@ public interface ProjectRepository {
     LiveData<Project> getProjectById(Long id);
 
     void insertProject(Project project);
-
-    void updateProject(Project project);
-
-    void deleteProject(Project project);
 }

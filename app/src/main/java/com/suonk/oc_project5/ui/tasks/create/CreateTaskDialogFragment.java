@@ -54,16 +54,6 @@ public class CreateTaskDialogFragment extends DialogFragment {
 
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
-//            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                @Override
-//                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-//                }
-//
-//                @Override
-//                public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//                }
-//            });
         });
 
         AppCompatEditText taskName = view.findViewById(R.id.add_task_edit_text);

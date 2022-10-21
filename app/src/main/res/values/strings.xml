@@ -7,7 +7,7 @@
     <string name="toolbar_sort_by_date">Sort by date</string>
     <string name="toolbar_sort_by_project">Sort by project</string>
 
-    <string name="no_task_title">Tu n\'as aucune tâche à traiter</string>
+    <string name="no_task_title">You have no tasks to deal with</string>
 
     <string name="add_task_dialog_title">Add new task</string>
     <string name="add_task_dialog_positive_button">Add</string>

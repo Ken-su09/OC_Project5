@@ -1,9 +1,11 @@
 package com.suonk.oc_project5.ui.tasks.list;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -32,6 +34,7 @@ import com.suonk.oc_project5.events.OnTaskEventListener;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class TasksListFragment extends Fragment implements OnTaskEventListener {
 
     private TasksViewModel viewModel;

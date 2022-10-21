@@ -42,23 +42,10 @@ public class CreateTaskUtils {
 
     public static void setProjectId(int position) {
         onView(withId(R.id.add_task_spinner)).perform(click());
-//        onData(anything()).atPosition(position).perform(click());
-
-//        onData(allOf(is(instanceOf(String.class)), is("1 : Project Tartampion"))).perform(click());
-
-//        onData(anything())
-//                .inAdapterView(withId(android.R.id.list))
-//                .atPosition(position)
-//                .perform(click());
-
-//        onData(allOf(is(instanceOf(Integer.class)), is(position)))
-//                .inRoot(isPlatformPopup())
-//                .perform(click());
 
         onData(isA(CreateTaskViewState.class))
                 .inRoot(isPlatformPopup())
                 .atPosition(position)
-                //.check(matches(withChild(withText(project.nameStringRes))))
                 .perform(
                         scrollTo(),
                         click()

@@ -36,11 +36,6 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public void updateTask(@NonNull Task task) {
-        dao.updateTask(task);
-    }
-
-    @Override
     public void deleteTask(long taskId) {
         dao.deleteTask(taskId);
     }

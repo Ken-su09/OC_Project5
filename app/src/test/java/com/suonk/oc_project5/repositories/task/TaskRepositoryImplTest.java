@@ -66,15 +66,6 @@ public class TaskRepositoryImplTest {
     }
 
     @Test
-    public void updateTask() {
-        Task task = new Task(0, 1L, "task1");
-        taskRepository.updateTask(task);
-
-        Mockito.verify(taskDao).updateTask(task);
-        Mockito.verifyNoMoreInteractions(taskDao);
-    }
-
-    @Test
     public void deleteTaskById() {
         taskRepository.deleteTask(1L);
 

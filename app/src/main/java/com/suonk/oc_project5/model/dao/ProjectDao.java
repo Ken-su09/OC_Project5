@@ -16,24 +16,13 @@ import java.util.List;
 @Dao
 public interface ProjectDao {
 
-    /**
-     *  getAllProjects() = project1, project2, project3....
-     */
+
     @Query("SELECT * FROM project")
     LiveData<List<Project>> getAllProjects();
 
-    /**
-     *  getProjectById(id) = project
-     */
     @Query("SELECT * FROM project WHERE id == :id")
     LiveData<Project> getProjectById(long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertProject(Project project);
-
-    @Update
-    void updateProject(Project project);
-
-    @Delete
-    void deleteProject(Project project);
 }

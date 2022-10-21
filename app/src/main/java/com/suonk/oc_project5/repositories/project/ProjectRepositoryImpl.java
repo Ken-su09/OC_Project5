@@ -34,14 +34,4 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     public void insertProject(Project project) {
         dao.insertProject(project);
     }
-
-    @Override
-    public void updateProject(Project project) {
-        dao.updateProject(project);
-    }
-
-    @Override
-    public void deleteProject(Project project) {
-        dao.deleteProject(project);
-    }
 }

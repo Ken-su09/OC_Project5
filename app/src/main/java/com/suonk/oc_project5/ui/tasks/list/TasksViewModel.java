@@ -1,7 +1,10 @@
 package com.suonk.oc_project5.ui.tasks.list;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -17,13 +20,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 @HiltViewModel
 public class TasksViewModel extends ViewModel {
 
@@ -34,7 +36,7 @@ public class TasksViewModel extends ViewModel {
     private final Executor executor;
 
     private final MediatorLiveData<List<TasksViewState>> viewStateLiveData = new MediatorLiveData<>();
-    private final MutableLiveData<Integer> sortIdLiveData = new MutableLiveData<>(R.id.sort_by_name);
+    private final MutableLiveData<Integer> sortIdLiveData = new MutableLiveData<>(R.id.sort_by_date);
     private final MutableLiveData<Integer> isListEmptyLiveData = new MutableLiveData<>(0);
 
     @Inject
@@ -84,8 +86,6 @@ public class TasksViewModel extends ViewModel {
             isListEmptyLiveData.setValue(4);
         }
 
-        tasksViewStates.sort(Comparator.comparing(TasksViewState::getTaskName));
-
         if (sortId != null) {
             if (sortId == R.id.sort_by_name) {
                 tasksViewStates.sort(Comparator.comparing(TasksViewState::getTaskName));
@@ -94,14 +94,16 @@ public class TasksViewModel extends ViewModel {
             } else if (sortId == R.id.sort_by_project) {
                 tasksViewStates.sort(Comparator.comparing(TasksViewState::getColor));
             } else {
-                tasksViewStates.sort(Comparator.comparing(TasksViewState::getTaskName));
+                tasksViewStates.sort(Comparator.comparing(TasksViewState::getId).reversed());
             }
+        } else {
+            tasksViewStates.sort(Comparator.comparing(TasksViewState::getId).reversed());
         }
 
         viewStateLiveData.setValue(tasksViewStates);
     }
 
-    public void setFilterIdLiveData(int sortId) {
+    public void setFilterIdLiveData(Integer sortId) {
         sortIdLiveData.setValue(sortId);
     }
 

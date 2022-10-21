@@ -64,22 +64,4 @@ public class ProjectRepositoryImplTest {
         Mockito.verify(projectDao).insertProject(new Project(0, "task1", 0));
         Mockito.verifyNoMoreInteractions(projectDao);
     }
-
-    @Test
-    public void updateTask() {
-        Project project = new Project(0, "task1", 0);
-        projectRepository.updateProject(project);
-
-        Mockito.verify(projectDao).updateProject(project);
-        Mockito.verifyNoMoreInteractions(projectDao);
-    }
-
-    @Test
-    public void deleteTaskById() {
-        Project project = new Project(0, "task1", 0);
-        projectRepository.deleteProject(project);
-
-        Mockito.verify(projectDao).deleteProject(project);
-        Mockito.verifyNoMoreInteractions(projectDao);
-    }
 }
