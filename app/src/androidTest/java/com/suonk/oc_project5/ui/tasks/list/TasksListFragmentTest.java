@@ -72,7 +72,6 @@ public class TasksListFragmentTest {
         onView(allOf(withId(R.id.add_task_button), isDisplayed())).perform(click());
 
         onView(allOf(withId(R.id.tasks_rv), isDisplayed())).check(matches(hasMinimumChildCount(1)));
-        onView(allOf(withId(R.id.img_delete), isDisplayed())).perform(click());
     }
 
     @Test
@@ -118,18 +117,18 @@ public class TasksListFragmentTest {
         onView(allOf(withId(R.id.tasks_rv), isDisplayed())).check(matches(atPosition(0, hasDescendant(withText("Aaaaaaa")))));
     }
 
-//    @Test
-//    public void tasks_list_add_two_task_then_sort_by_date() {
-//        onView(allOf(withId(R.id.add_task), isDisplayed())).perform(click());
-//        createTask(2, "Ask2");
-//        onView(allOf(withId(R.id.add_task_button), isDisplayed())).perform(click());
-//
-//        onView(allOf(withId(R.id.add_task), isDisplayed())).perform(click());
-//        createTask(0, "Zzzzzz");
-//        onView(allOf(withId(R.id.add_task_button), isDisplayed())).perform(click());
-//
-//        onView(withId(R.id.sort_by_date)).perform();
-//
-//        onView(allOf(withId(R.id.tasks_rv), isDisplayed())).check(matches(atPosition(0, hasDescendant(withText("Aaaaaaa")))));
-//    }
+    @Test
+    public void tasks_list_add_two_task_then_sort_by_date() {
+        onView(allOf(withId(R.id.add_task), isDisplayed())).perform(click());
+        createTask(2, "Ask2");
+        onView(allOf(withId(R.id.add_task_button), isDisplayed())).perform(click());
+
+        onView(allOf(withId(R.id.add_task), isDisplayed())).perform(click());
+        createTask(0, "Zzzzzz");
+        onView(allOf(withId(R.id.add_task_button), isDisplayed())).perform(click());
+
+        onView(withId(R.id.sort_by_date)).perform();
+
+        onView(allOf(withId(R.id.tasks_rv), isDisplayed())).check(matches(atPosition(0, hasDescendant(withText("Zzzzzz")))));
+    }
 }

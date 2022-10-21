@@ -31,7 +31,7 @@ public class ProjectDaoTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
-    public void initDatabase() throws Exception {
+    public void initDatabase() {
         this.database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().getContext(),
                 AppDatabase.class)
                 .allowMainThreadQueries()
@@ -40,7 +40,7 @@ public class ProjectDaoTest {
     }
 
     @After
-    public void closeDatabase() throws Exception {
+    public void closeDatabase() {
         database.close();
     }
 
@@ -73,43 +73,5 @@ public class ProjectDaoTest {
         List<Project> projects = LiveDataTestUtil.getValue(projectDao.getAllProjects());
 
         assertEquals(Arrays.asList(projectTest1, projectTest2), projects);
-    }
-
-    @Test
-    public void insert_and_delete() throws InterruptedException {
-        Project projectTest1 = new Project(1L, "test1", 1);
-        projectDao.insertProject(projectTest1);
-        projectDao.deleteProject(projectTest1);
-
-        List<Project> projects = LiveDataTestUtil.getValue(projectDao.getAllProjects());
-
-        assertEquals(0, projects.size());
-    }
-
-    @Test
-    public void insert_two_then_delete_one_and_get_all_projects_should_contain_one() throws InterruptedException {
-        Project projectTest1 = new Project(1L, "test1", 1);
-        Project projectTest2 = new Project(2L, "test2", 2);
-        projectDao.insertProject(projectTest1);
-        projectDao.insertProject(projectTest2);
-
-        projectDao.deleteProject(projectTest2);
-
-        List<Project> projects = LiveDataTestUtil.getValue(projectDao.getAllProjects());
-
-        assertEquals(1, projects.size());
-    }
-
-    @Test
-    public void insert_then_update_project() throws InterruptedException {
-        Project projectTest = new Project(1L, "test1", 1);
-        projectDao.insertProject(projectTest);
-        Project project = LiveDataTestUtil.getValue(projectDao.getProjectById(1L));
-
-        assertEquals(projectTest, project);
-
-        projectDao.updateProject(new Project(1L, "test2", 2));
-
-        assertNotSame(projectTest, project);
     }
 }

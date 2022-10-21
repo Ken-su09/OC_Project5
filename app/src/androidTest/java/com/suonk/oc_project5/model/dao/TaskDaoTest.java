@@ -33,7 +33,7 @@ public class TaskDaoTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
-    public void initDatabase() throws Exception {
+    public void initDatabase() {
         this.database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().getContext(),
                 AppDatabase.class)
                 .allowMainThreadQueries()
@@ -46,7 +46,7 @@ public class TaskDaoTest {
     }
 
     @After
-    public void closeDatabase() throws Exception {
+    public void closeDatabase() {
         database.close();
     }
 
