@@ -45,8 +45,6 @@ public class TasksListAdapter extends ListAdapter<TasksViewState, TasksListAdapt
             binding.taskName.setText(task.getTaskName());
             binding.imgProject.setImageResource(task.getColor());
 
-            binding.taskName.setText(task.getTaskName());
-
             binding.imgDelete.setOnClickListener(view -> callBack.onTaskDelete(task.getId()));
         }
     }
